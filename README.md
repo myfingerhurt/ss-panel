@@ -24,20 +24,187 @@ Please visit [releases pages](https://github.com/orvice/ss-panel/releases) to do
 
 ## Install
 
+Ubuntu 16.04 LTS 
+
 ### Step 0
 
+Install LAMP
+Install Apache
 ```
-git clone https://github.com/orvice/ss-panel.git
-```
-
-### Step 1
-
-```
-$ curl -sS https://getcomposer.org/installer | php
-$ php composer.phar  install
+$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo nano /etc/apache2/apache2.conf
 ```
 
-### Step 2
+Add the following line into /etc/apache2/apache2.conf, change the server_domain_or_IP accordingly.
+```
+ServerName server_domain_or_IP
+```
+
+```
+$ sudo apache2ctl configtest
+```
+You should see this
+```
+Output
+Syntax OK
+```
+Restart Apache to get effective
+```
+$ sudo systemctl restart apache2
+```
+Check if it is working, you should see the Ubuntu logo and apache2 default page.
+Before accessing your apache server, you probably need to adjust the firewall to allow web traffic, but we skip this here.
+```
+http://your_server_IP_address
+```
+Install MySQL
+```
+sudo apt-get install mysql-server
+```
+Sever will ask you to select and confirm a password for the MySQL "root" user.
+
+Install PHP
+```
+$ sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql
+```
+Modify the way that Apache serves files when a directory is requested. 
+```
+$ sudo nano /etc/apache2/mods-enabled/dir.conf
+```
+Make Apache look for an index.php file first. Put .php on the first.
+```
+<IfModule mod_dir.c>
+    DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+</IfModule>
+```
+Restart the Apache web server in order to apply your changes
+```
+$ sudo systemctl restart apache2
+```
+Install PHP Modules
+We need to install more modules later.
+```
+sudo apt-get install php-cli
+```
+Create php test page.
+```
+sudo nano /var/www/html/info.php
+```
+put everything below into the file.
+```
+<?php
+phpinfo();
+?>
+```
+test it in your browser.
+```
+http://your_server_IP_address/info.php
+```
+
+more detail please refer to 
+https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04
+
+Install phpMyAdmin and components.
+```
+$ sudo apt-get install phpmyadmin php-mbstring php-gettext
+$ sudo phpenmod mcrypt
+$ sudo phpenmod mbstring
+```
+restart Apache for your changes
+```
+sudo systemctl restart apache2
+```
+Test your phpmyadmin
+```
+http://domain_name_or_IP/phpmyadmin
+```
+
+1. Create a user "ss-panel" same as yours in the .env we will talk about later.
+2. Import db.sql into mysql, this database will be named as "ss-panel" too, automatically.
+3. Grand data usage privilege for "ss-panel".
+
+
+### Step 1 Install ss-panel
+
+use shadowsocks proxy to download v3.4.5 tar.gz
+```
+$ export http_proxy='192.168.0.7:1080' && wget https://github.com/orvice/ss-panel/archive/v3.4.5.tar.gz
+```
+
+Unpack
+```
+$ tar -xvf v3.4.5.tar.gz
+```
+
+Change directory to ~/ss-panel-3.4.5/
+```
+$ cd ss-panel-3.4.5/
+```
+
+download composer through shadowsocks proxy or any other proxy 
+```
+$ export HTTPS_PROXY='192.168.0.7:1080' && curl -sS https://getcomposer.org/installer | php
+```
+
+Install composer
+```
+$ php composer.phar install
+```
+
+You will be experiencing lots of errors as below.
+```
+PHP error: “The zip extension and unzip command are both missing, skipping.”
+
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+    Failed to download psr/log from dist: The zip extension and unzip command are both missing, skipping.
+The php.ini used by your command-line PHP is: /etc/php/7.0/cli/php.ini
+    Now trying to download from source
+```
+
+Install necessary components.
+```
+sudo apt install zip unzip php7.0-zip
+sudo apt-get install php-xml
+sudo apt-get install php-mbstring
+sudo apt-get install php-gd
+sudo apt-get install php-curl
+```
+
+Link ss-panel to home directory
+```
+sudo ln -s ~/ss-panel-3.4.5/ /var/www/html/ss
+```
+
+Enabling mod_rewrite
+```
+$ sudo a2enmod rewrite
+$ sudo service apache2 restart
+```
+
+A .htaccess file is located at ~/ss/public, allow changes in the .htaccess file. 
+We will need to set up and secure a few more settings before we can begin.
+```
+$ sudo nano /etc/apache2/sites-enabled/000-default.conf
+```
+
+put the following line right below this line<VirtualHost *:80>
+```
+<Directory /var/www/html>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+</Directory>
+```
+
+To put these changes into effect, restart Apache.
+```
+$ sudo service apache2 restart
+```
+
+### Step 2 Set Environment
 
 ```
 cp .env.example .env
@@ -45,31 +212,89 @@ cp .env.example .env
 
 then edit .env
 
+put read and write privilege on storage, otherwise you will encount Slim Application Error
 ```
 chmod -R 777 storage
 ```
 
-### Step 3
+### Step 3 Import Data Base
 
-Import the sql to you mysql database.
+Import the sql to you mysql database by phpmyadmin. 
+```
+http://domain_name_or_IP/phpmyadmin
+```
+
+1. Create a user "ss-panel" same as yours in the .env on step 2.
+2. Import db.sql into mysql, this database will be named as "ss-panel" too, automatically.
+3. grand data usage privilege for "ss-panel".
+
 
 ### Step 4
 
-Nginx Config example:
-
-if you download ss-panel on path /home/www/ss-panel
-
-
+Change DocumentRoot directory to ss-panel, after this you are still able to access phpmyadmin.
+If you wish to do some changes on mySQL, just access phpmyadmin by http://domain_name_or_IP/phpmyadmin in your browser.
 ```
-root /home/www/ss-panel/public;
-
-location / {
-    try_files $uri $uri/ /index.php$is_args$args;
-}
-    
+$ sudo nano /etc/apache2/sites-enabled/000-default.conf
 ```
 
-### Step 5 Config
+Change the DocumentRoot point to path /var/www/html/ss/public
+```
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html/ss/public
+```
 
-view config guide on [wiki](https://github.com/orvice/ss-panel/wiki/v3-Config)
+To put these changes into effect, restart Apache.
+```
+$ sudo service apache2 restart
+```
+
+
+### Step 5 Start ss-panel
+
+add default administrator account.
+input e-mail address and new password for ss-panel administrator.
+```
+$ php xcat createAdmin
+```
+
+Open a browser and check your ss-panel working or not, login and make some changes. 
+```
+http://domain_name_or_IP/
+```
+
+### Step 6 Install shadowsocks-rm
+```
+$ git clone -b manyuser https://github.com/myfingerhurt/shadowsocks-rm.git
+```
+
+Install pip
+```
+$ sudo apt install python-pip
+```
+
+Install cymysql for shadowsocks-manyuser
+```
+$ pip install cymysql
+```
+
+Star shadowsocks-manyuser process with custom DNS.
+```
+$ sudo python shadowsocks-rm/shadowsocks/servers.py --dns-server 8.8.8.8
+```
+
+### Trouble shoot
+
+If you get this message, you can safely ignore it.
+You are using pip version 8.1.1, however version 9.0.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+Or you can update anyway.
+```
+$ pip install --upgrade pip
+```
+
+if you see this, that's your muKey in .env which does not match with API_PASS in config.py, match them, and try again.
+```
+HTTPError: HTTP Error 405: Not Allowed
+HTTPError: HTTP Error 401: Unauthorized
+```
 
