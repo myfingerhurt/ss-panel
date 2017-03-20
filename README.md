@@ -60,7 +60,7 @@ http://your_server_IP_address
 ```
 Install MySQL
 ```
-sudo apt-get install mysql-server
+$ sudo apt-get install mysql-server
 ```
 Sever will ask you to select and confirm a password for the MySQL "root" user.
 
@@ -85,11 +85,11 @@ $ sudo systemctl restart apache2
 Install PHP Modules
 We need to install more modules later.
 ```
-sudo apt-get install php-cli
+$ sudo apt-get install php-cli
 ```
 Create php test page.
 ```
-sudo nano /var/www/html/info.php
+$ sudo nano /var/www/html/info.php
 ```
 put everything below into the file.
 ```
@@ -113,7 +113,7 @@ $ sudo phpenmod mbstring
 ```
 restart Apache for your changes
 ```
-sudo systemctl restart apache2
+$ sudo systemctl restart apache2
 ```
 Test your phpmyadmin
 ```
@@ -165,16 +165,16 @@ The php.ini used by your command-line PHP is: /etc/php/7.0/cli/php.ini
 
 Install necessary components.
 ```
-sudo apt install zip unzip php7.0-zip
-sudo apt-get install php-xml
-sudo apt-get install php-mbstring
-sudo apt-get install php-gd
-sudo apt-get install php-curl
+$ sudo apt install zip unzip php7.0-zip
+$ sudo apt-get install php-xml
+$ sudo apt-get install php-mbstring
+$ sudo apt-get install php-gd
+$ sudo apt-get install php-curl
 ```
 
 Link ss-panel to home directory
 ```
-sudo ln -s ~/ss-panel-3.4.5/ /var/www/html/ss
+$ sudo ln -s ~/ss-panel-3.4.5/ /var/www/html/ss
 ```
 
 Enabling mod_rewrite
@@ -207,14 +207,14 @@ $ sudo service apache2 restart
 ### Step 2 Set Environment
 
 ```
-cp .env.example .env
+$ cp .env.example .env
 ```
 
 then edit .env
 
 put read and write privilege on storage, otherwise you will encount Slim Application Error
 ```
-chmod -R 777 storage
+$ chmod -R 777 storage
 ```
 
 ### Step 3 Import Data Base
