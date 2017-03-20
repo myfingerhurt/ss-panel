@@ -293,6 +293,11 @@ Star shadowsocks-manyuser process with custom DNS.
 $ sudo python shadowsocks-rm/shadowsocks/servers.py --dns-server 8.8.8.8
 ```
 
+track the log
+```
+$ tail -f /var/log/shadowsocks.log
+```
+
 ## Trouble shoot
 
 If you get this message, you can safely ignore it.
