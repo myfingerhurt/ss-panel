@@ -22,14 +22,9 @@ Please visit [releases pages](https://github.com/orvice/ss-panel/releases) to do
 * [shadowsocks-go mu](https://github.com/orvice/shadowsocks-go)
 
 
-## Install
+## Install LAMP Ubuntu 16.04 LTS 
 
-Ubuntu 16.04 LTS 
-
-### Step 0
-
-Install LAMP
-Install Apache
+### Step 1 Install Apache
 ```
 $ sudo apt-get update
 $ sudo apt-get install apache2
@@ -58,13 +53,13 @@ Before accessing your apache server, you probably need to adjust the firewall to
 ```
 http://your_server_IP_address
 ```
-Install MySQL
+### Step 2 Install MySQL
 ```
 $ sudo apt-get install mysql-server
 ```
 Sever will ask you to select and confirm a password for the MySQL "root" user.
 
-Install PHP
+### Step 3 Install PHP
 ```
 $ sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql
 ```
@@ -82,11 +77,12 @@ Restart the Apache web server in order to apply your changes
 ```
 $ sudo systemctl restart apache2
 ```
-Install PHP Modules
+### Step 4 Install PHP Modules
 We need to install more modules later.
 ```
 $ sudo apt-get install php-cli
 ```
+### Step 5 Test php
 Create php test page.
 ```
 $ sudo nano /var/www/html/info.php
@@ -105,7 +101,7 @@ http://your_server_IP_address/info.php
 more detail please refer to 
 https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04
 
-Install phpMyAdmin and components.
+### Step 6 Install phpMyAdmin and components.
 ```
 $ sudo apt-get install phpmyadmin php-mbstring php-gettext
 $ sudo phpenmod mcrypt
@@ -125,8 +121,8 @@ http://domain_name_or_IP/phpmyadmin
 3. Grand data usage privilege for "ss-panel".
 
 
-### Step 1 Install ss-panel
-
+## Install ss-panel
+### Step 1 Download
 use shadowsocks proxy to download v3.4.5 tar.gz
 ```
 $ export http_proxy='192.168.0.7:1080' && wget https://github.com/orvice/ss-panel/archive/v3.4.5.tar.gz
@@ -147,7 +143,7 @@ download composer through shadowsocks proxy or any other proxy
 $ export HTTPS_PROXY='192.168.0.7:1080' && curl -sS https://getcomposer.org/installer | php
 ```
 
-Install composer
+### Step 2 Install composer
 ```
 $ php composer.phar install
 ```
@@ -172,12 +168,11 @@ $ sudo apt-get install php-gd
 $ sudo apt-get install php-curl
 ```
 
-Link ss-panel to home directory
+### Step 3 Link ss-panel to home directory
 ```
 $ sudo ln -s ~/ss-panel-3.4.5/ /var/www/html/ss
 ```
-
-Enabling mod_rewrite
+### Step 4 Enabling mod_rewrite
 ```
 $ sudo a2enmod rewrite
 $ sudo service apache2 restart
@@ -204,8 +199,7 @@ To put these changes into effect, restart Apache.
 $ sudo service apache2 restart
 ```
 
-### Step 2 Set Environment
-
+### Step 5 Set Environment and privileges
 ```
 $ cp .env.example .env
 ```
@@ -217,7 +211,7 @@ put read and write privilege on storage, otherwise you will encount Slim Applica
 $ chmod -R 777 storage
 ```
 
-### Step 3 Import Data Base
+### Step 6 Import Data Base
 
 Import the sql to you mysql database by phpmyadmin. 
 ```
@@ -229,7 +223,7 @@ http://domain_name_or_IP/phpmyadmin
 3. grand data usage privilege for "ss-panel".
 
 
-### Step 4
+### Step 7
 
 Change DocumentRoot directory to ss-panel, after this you are still able to access phpmyadmin.
 If you wish to do some changes on mySQL, just access phpmyadmin by http://domain_name_or_IP/phpmyadmin in your browser.
@@ -249,7 +243,7 @@ $ sudo service apache2 restart
 ```
 
 
-### Step 5 Start ss-panel
+## Step 8 Start ss-panel
 
 add default administrator account.
 input e-mail address and new password for ss-panel administrator.
@@ -262,12 +256,13 @@ Open a browser and check your ss-panel working or not, login and make some chang
 http://domain_name_or_IP/
 ```
 
-### Step 6 Install shadowsocks-rm
+## Install shadowsocks-rm
+### Step 1 clone from github
 ```
 $ git clone -b manyuser https://github.com/myfingerhurt/shadowsocks-rm.git
 ```
 
-Install pip
+### Step 2 Install pip
 ```
 $ sudo apt install python-pip
 ```
@@ -276,13 +271,13 @@ Install cymysql for shadowsocks-manyuser
 ```
 $ pip install cymysql
 ```
-
+### Step 3 Final
 Star shadowsocks-manyuser process with custom DNS.
 ```
 $ sudo python shadowsocks-rm/shadowsocks/servers.py --dns-server 8.8.8.8
 ```
 
-### Trouble shoot
+## Trouble shoot
 
 If you get this message, you can safely ignore it.
 You are using pip version 8.1.1, however version 9.0.1 is available.
