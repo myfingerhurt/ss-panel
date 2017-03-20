@@ -1,4 +1,4 @@
-# ss-panel
+# ss-panel V3
 
 Let's talk about cat.  Based on [LightFish](https://github.com/Pongtan/LightFish).
 
@@ -22,7 +22,7 @@ Please visit [releases pages](https://github.com/orvice/ss-panel/releases) to do
 * [shadowsocks-go mu](https://github.com/orvice/shadowsocks-go)
 
 
-## Install LAMP Ubuntu 16.04 LTS 
+## Install LAMP on Ubuntu 16.04 LTS 
 
 ### Step 1 Install Apache
 ```
@@ -36,14 +36,17 @@ Add the following line into /etc/apache2/apache2.conf, change the server_domain_
 ServerName server_domain_or_IP
 ```
 
+check for syntax errors
 ```
 $ sudo apache2ctl configtest
 ```
+
 You should see this
 ```
 Output
 Syntax OK
 ```
+
 Restart Apache to get effective
 ```
 $ sudo systemctl restart apache2
@@ -63,36 +66,42 @@ Sever will ask you to select and confirm a password for the MySQL "root" user.
 ```
 $ sudo apt-get install php libapache2-mod-php php-mcrypt php-mysql
 ```
+
 Modify the way that Apache serves files when a directory is requested. 
 ```
 $ sudo nano /etc/apache2/mods-enabled/dir.conf
 ```
+
 Make Apache look for an index.php file first. Put .php on the first.
 ```
 <IfModule mod_dir.c>
     DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
 </IfModule>
 ```
+
 Restart the Apache web server in order to apply your changes
 ```
 $ sudo systemctl restart apache2
 ```
 ### Step 4 Install PHP Modules
+
 We need to install more modules later.
 ```
 $ sudo apt-get install php-cli
 ```
-### Step 5 Test php
+### Step 5 Test PHP
 Create php test page.
 ```
 $ sudo nano /var/www/html/info.php
 ```
+
 put everything below into the file.
 ```
 <?php
 phpinfo();
 ?>
 ```
+
 test it in your browser.
 ```
 http://your_server_IP_address/info.php
@@ -107,11 +116,13 @@ $ sudo apt-get install phpmyadmin php-mbstring php-gettext
 $ sudo phpenmod mcrypt
 $ sudo phpenmod mbstring
 ```
+
 restart Apache for your changes
 ```
 $ sudo systemctl restart apache2
 ```
-Test your phpmyadmin
+
+test your phpmyadmin
 ```
 http://domain_name_or_IP/phpmyadmin
 ```
@@ -166,6 +177,11 @@ $ sudo apt-get install php-xml
 $ sudo apt-get install php-mbstring
 $ sudo apt-get install php-gd
 $ sudo apt-get install php-curl
+```
+
+Try install composer again, this time shoule be OK.
+```
+$ php composer.phar install
 ```
 
 ### Step 3 Link ss-panel to home directory
@@ -223,7 +239,7 @@ http://domain_name_or_IP/phpmyadmin
 3. grand data usage privilege for "ss-panel".
 
 
-### Step 7
+### Step 7 Change DocumentRoot directory
 
 Change DocumentRoot directory to ss-panel, after this you are still able to access phpmyadmin.
 If you wish to do some changes on mySQL, just access phpmyadmin by http://domain_name_or_IP/phpmyadmin in your browser.
