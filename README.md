@@ -259,7 +259,7 @@ $ sudo service apache2 restart
 ```
 
 
-## Step 8 Start ss-panel
+### Step 8 Start ss-panel
 
 add default administrator account.
 input e-mail address and new password for ss-panel administrator.
@@ -301,8 +301,10 @@ $ tail -f /var/log/shadowsocks.log
 ## Trouble shoot
 
 If you get this message, you can safely ignore it.
+```
 You are using pip version 8.1.1, however version 9.0.1 is available.
 You should consider upgrading via the 'pip install --upgrade pip' command.
+```
 Or you can update anyway.
 ```
 $ pip install --upgrade pip
