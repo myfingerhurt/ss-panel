@@ -1,4 +1,4 @@
-# ss-panel V3
+# ss-panel V3 Full Installation Guide
 
 Let's talk about cat.  Based on [LightFish](https://github.com/Pongtan/LightFish).
 
